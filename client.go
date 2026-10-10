@@ -80,6 +80,14 @@ func (c *Client) handlePacket(packet string) {
 		c.server.gameCompleteCount.Add(1)
 	}
 
+	if packetType == "MODEL_REQUEST" && c.server.models.handleRequest(c, packet) {
+		return
+	}
+
+	if packetType == "MODEL_CHUNK" {
+		c.server.models.handleChunk(c, packet)
+	}
+
 	targetClientId := gjson.Get(packet, "targetClientId")
 
 	if targetClientId.Exists() {

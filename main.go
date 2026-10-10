@@ -126,6 +126,13 @@ func processStdin(s *Server) {
 			log.Println("Quiet mode:", s.quietMode.Load())
 		case "stats":
 			log.Println("Games Complete: " + strconv.FormatInt(int64(s.gameCompleteCount.Load()), 10))
+		case "models":
+			if !s.models.enabled() {
+				log.Println("Model cache disabled")
+				continue
+			}
+			count, size := s.models.stats()
+			log.Printf("Models kept: %d, %.1f of %d MB\n", count, float64(size)/(1024*1024), s.models.maxBytes/(1024*1024))
 		case "list":
 			s.rooms.Range(func(_, value interface{}) bool {
 				room := value.(*Room)
@@ -216,7 +223,7 @@ func processStdin(s *Server) {
 
 			os.Exit(0)
 		default:
-			log.Printf("Available commands:\nhelp: Show this help message\nstats: Print server stats\nquiet: Toggle quiet mode\nroomCount: Show the number of rooms\nclientCount: Show the number of clients\nlist: List all rooms and clients\nstop <message>: Stop the server\nmessage <clientId> <message>: Send a message to a client\nmessageAll <message>: Send a message to all clients\ndisable <clientId> <message>: Disable anchor on a client\ndisableAll <message>: Disable anchor on all clients\ndeleteRoom <roomID>: Disables anchor on all online clients in the room and deletes it\n")
+			log.Printf("Available commands:\nhelp: Show this help message\nstats: Print server stats\nmodels: Show how many models are kept\nquiet: Toggle quiet mode\nroomCount: Show the number of rooms\nclientCount: Show the number of clients\nlist: List all rooms and clients\nstop <message>: Stop the server\nmessage <clientId> <message>: Send a message to a client\nmessageAll <message>: Send a message to all clients\ndisable <clientId> <message>: Disable anchor on a client\ndisableAll <message>: Disable anchor on all clients\ndeleteRoom <roomID>: Disables anchor on all online clients in the room and deletes it\n")
 		}
 	}
 }

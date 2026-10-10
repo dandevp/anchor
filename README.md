@@ -45,6 +45,12 @@ Optional environment variables can be set:
 
 - `PORT`: configures the server port inside the container; defaults to `43383`
 - `Volumes`: mounts a local directory to a directory in the container; our example uses the log folder
+- `MODEL_CACHE_MB`: how much disk space kept player models may take, the least recently used go first; defaults to `2048`, `0` turns the cache off
+- `MODEL_CACHE_DIR`: where player models are kept; defaults to `models` (mount it as a volume to keep them across restarts)
+
+### Player models
+
+Ship of Harkinian co-op clients send each other their Link models (`MODEL_REQUEST` / `MODEL_CHUNK`). The server keeps every model that passes through it once it checked the model matches its id (a hash of its files), and answers later requests for it itself, so each model is uploaded only once. The `models` console command shows how many are kept.
 
 ### Docker Compose
 [Example docker compose file](/compose.yml) 

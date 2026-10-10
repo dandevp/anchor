@@ -30,6 +30,7 @@ type Server struct {
 	rooms             sync.Map
 	gameCompleteCount atomic.Uint64
 	nextClientId      atomic.Uint64
+	models            *ModelCache
 }
 
 func NewServer() *Server {
@@ -39,6 +40,7 @@ func NewServer() *Server {
 		rooms:             sync.Map{},
 		gameCompleteCount: atomic.Uint64{},
 		nextClientId:      atomic.Uint64{},
+		models:            NewModelCache(),
 	}
 
 	s.quietMode.Store(true)
